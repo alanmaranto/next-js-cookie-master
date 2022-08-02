@@ -9,12 +9,15 @@ import {
   Radio,
 } from "@mui/material";
 import { Layout } from "../components/layouts";
+import Cookies from 'js-cookie';
 
 const ThemeChangerPage = () => {
   const [currentTheme, setCurrentTheme] = useState("light");
 
   const onThemeChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCurrentTheme(event.target.value);
+
+    Cookies.set('theme', event.target.value);
   };
 
   return (
