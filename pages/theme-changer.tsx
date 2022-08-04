@@ -12,6 +12,7 @@ import {
 import { Layout } from "../components/layouts";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { GetServerSideProps } from "next";
 interface Props {
   theme: string;
 }
@@ -64,4 +65,19 @@ const ThemeChangerPage: FC<Props> = ({ theme }) => {
   );
 };
 
-export default ThemeChangerPage
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const { theme = "light", name = "No name" } = req.cookies;
+  const validThemes = ["light", "dark", "custom"];
+
+  return {
+    props: {
+      theme: validThemes.includes(theme) ? theme : "dark",
+      name,
+    },
+  };
+};
+
+export default ThemeChangerPage;
