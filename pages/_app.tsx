@@ -1,12 +1,30 @@
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, Theme, ThemeProvider } from "@mui/material";
 import type { AppContext, AppProps } from "next/app";
 import { GetServerSideProps } from "next";
-import { customTheme } from "../themes";
+import { customTheme, darkTheme, lightTheme } from "../themes";
 
-function MyApp({ Component, pageProps, ...rest }: AppProps) {
-  console.log(rest)
+interface Props extends AppProps {
+  theme: string;
+}
+
+type TypeTheme = { [key: string]: Theme };
+
+function MyApp({ Component, pageProps, ...rest }: Props) {
+  const { theme } = rest;
+
+  // With ternarys
+  /*   const currentTheme: Theme =
+    theme === "light" ? lightTheme : theme === "dark" ? darkTheme : customTheme; */
+
+  // with dynamic object
+  const currentTheme: TypeTheme = {
+    light: lightTheme,
+    dark: darkTheme,
+    custom: customTheme,
+  };
+
   return (
-    <ThemeProvider theme={customTheme}>
+    <ThemeProvider theme={currentTheme[theme]}>
       <CssBaseline />
       <Component {...pageProps} />
     </ThemeProvider>
@@ -17,9 +35,6 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
   const { ctx } = appContext;
   const { req } = ctx;
   const theme = req ? (req as any).cookies.theme : { theme: "light" };
-
-  console.log(req.cookies);
-  console.log(theme);
 
   const validThemes = ["light", "dark", "custom"];
 
