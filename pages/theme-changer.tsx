@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useState } from "react";
+import React, { ChangeEvent, FC, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -7,11 +7,12 @@ import {
   FormLabel,
   RadioGroup,
   Radio,
+  Button,
 } from "@mui/material";
 import { Layout } from "../components/layouts";
 import Cookies from "js-cookie";
 import { GetServerSideProps } from "next";
-
+import axios from 'axios'
 interface Props {
   theme: string;
 }
@@ -24,6 +25,15 @@ const ThemeChangerPage: FC<Props> = ({ theme }) => {
 
     Cookies.set("theme", event.target.value);
   };
+
+  useEffect(() => {
+    console.log("Cookies", Cookies.get("theme"));
+  }, []);
+
+  const handleRequest = async () => {
+    const { data } = await axios.get('/api/hello')
+    console.log(data)
+  }
 
   return (
     <Layout>
@@ -45,6 +55,9 @@ const ThemeChangerPage: FC<Props> = ({ theme }) => {
               />
             </RadioGroup>
           </FormControl>
+          <Button variant="contained" color="primary" onClick={handleRequest}>
+            Request
+          </Button>
         </CardContent>
       </Card>
       <h1>theme-changer</h1>
