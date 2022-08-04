@@ -12,13 +12,13 @@ import {
 import { Layout } from "../components/layouts";
 import Cookies from "js-cookie";
 import { GetServerSideProps } from "next";
-import axios from 'axios'
+import axios from "axios";
 interface Props {
   theme: string;
 }
 
 const ThemeChangerPage: FC<Props> = ({ theme }) => {
-  const [currentTheme, setCurrentTheme] = useState("light");
+  const [currentTheme, setCurrentTheme] = useState(theme);
 
   const onThemeChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCurrentTheme(event.target.value);
@@ -31,9 +31,9 @@ const ThemeChangerPage: FC<Props> = ({ theme }) => {
   }, []);
 
   const handleRequest = async () => {
-    const { data } = await axios.get('/api/hello')
-    console.log(data)
-  }
+    const { data } = await axios.get("/api/hello");
+    console.log(data);
+  };
 
   return (
     <Layout>
@@ -72,9 +72,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { req } = ctx;
   const { theme = "light" } = req.cookies;
 
+  const validThemes = ["light", "dark", "custom"];
+
   return {
     props: {
-      theme,
+      theme: validThemes.includes(theme) ? theme : "dark",
     },
   };
 };
